@@ -1,0 +1,102 @@
+@use '../../styles/admin-shared' as *;
+
+// =============================================================================
+// Users Admin Page — page-specific styles only.
+// All shared visuals (page head, toolbar, table, modal, btn, status pill, etc.)
+// live in `dashboard/styles/_admin-shared.scss`.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Roles button (compact pill in the table cell that opens the roles modal)
+// -----------------------------------------------------------------------------
+.roles-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+  color: var(--primary-800);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--primary-500);
+    background: linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.18);
+  }
+
+  &--empty {
+    background: var(--gray-50);
+    color: var(--gray-500);
+    border-color: var(--gray-200);
+
+    &:hover {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border-color: var(--gray-300);
+    }
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.18);
+    color: var(--primary-900);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// El switch (.switch / .slider) vive en `_admin-shared.scss` para que tanto Usuarios como
+// Organizaciones reutilicen exactamente la misma definicion visual.
+
+// -----------------------------------------------------------------------------
+// Roles modal (checkbox grid)
+// -----------------------------------------------------------------------------
+.role-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.chk {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-300);
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--primary-600);
+  }
+}
+
+// .form-grid y los estilos de <select> dentro del modal viven en
+// styles/_admin-shared.scss para reutilizarse entre paginas.

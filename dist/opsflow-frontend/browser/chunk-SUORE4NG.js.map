@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/features/auth/auth-layout/auth-layout.component.ts", "src/app/features/auth/auth-layout/auth-layout.component.html"],
+  "sourcesContent": ["import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'app-auth-layout',\r\n  standalone: true,\r\n  templateUrl: './auth-layout.component.html',\r\n  styleUrl: './auth-layout.component.scss'\r\n})\r\nexport class AuthLayoutComponent {}\r\n", "<div class=\"auth-page\">\r\n  <div class=\"auth-card\">\r\n    <div class=\"auth-shell\">\r\n      <aside class=\"auth-branding\">\r\n        <ng-content select=\"[auth-branding]\"></ng-content>\r\n      </aside>\r\n      <section class=\"auth-form-panel\">\r\n        <ng-content select=\"[auth-form]\"></ng-content>\r\n      </section>\r\n    </div>\r\n  </div>\r\n</div>\r\n"],
+  "mappings": ";;;;;;;;;;;;;;AAQM,IAAO,sBAAP,MAAO,qBAAmB;;qCAAnB,sBAAmB;EAAA;yEAAnB,sBAAmB,WAAA,CAAA,CAAA,iBAAA,CAAA,GAAA,oBAAA,KAAA,OAAA,GAAA,MAAA,GAAA,QAAA,CAAA,CAAA,GAAA,WAAA,GAAA,CAAA,GAAA,WAAA,GAAA,CAAA,GAAA,YAAA,GAAA,CAAA,GAAA,eAAA,GAAA,CAAA,GAAA,iBAAA,CAAA,GAAA,UAAA,SAAA,6BAAA,IAAA,KAAA;AAAA,QAAA,KAAA,GAAA;;ACRhC,MAAA,yBAAA,GAAA,OAAA,CAAA,EAAuB,GAAA,OAAA,CAAA,EACE,GAAA,OAAA,CAAA,EACG,GAAA,SAAA,CAAA;AAEpB,MAAA,uBAAA,CAAA;AACF,MAAA,uBAAA;AACA,MAAA,yBAAA,GAAA,WAAA,CAAA;AACE,MAAA,uBAAA,GAAA,CAAA;AACF,MAAA,uBAAA,EAAU,EACN,EACF;;;;;sEDFK,qBAAmB,CAAA;UAN/B;uBACW,mBAAiB,YACf,MAAI,UAAA,gXAAA,QAAA,CAAA,kiDAAA,EAAA,CAAA;;;;6EAIL,qBAAmB,EAAA,WAAA,uBAAA,UAAA,8DAAA,YAAA,EAAA,CAAA;AAAA,GAAA;",
+  "names": []
+}

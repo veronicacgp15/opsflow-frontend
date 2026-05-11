@@ -1,0 +1,16 @@
+@use '../styles/auth-branding.shared' as *;
+@use '../styles/auth-form.shared' as *;
+
+.form-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.forgot-link--button {
+  font: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: right;
+}

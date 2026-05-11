@@ -1,0 +1,601 @@
+// =============================================================================
+// Admin Pages — Shared Styles
+// Reusable visual language for every admin/dashboard page (table, toolbar,
+// modal shell, buttons, status pills, etc.).
+//
+// Usage from a component's SCSS file:
+//   @use '../../styles/admin-shared' as *;
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Page header
+// -----------------------------------------------------------------------------
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--primary-800) 0%, var(--primary-500) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.page-sub {
+  margin: 0.35rem 0 0;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  max-width: 720px;
+  line-height: 1.45;
+
+  code {
+    font-size: 0.75rem;
+    background: var(--gray-100);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Toolbar / filters
+// -----------------------------------------------------------------------------
+.toolbar {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--gray-600);
+
+  &--grow {
+    flex: 0 1 320px;
+    min-width: 200px;
+  }
+
+  input,
+  select {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    background: white;
+  }
+
+  select {
+    cursor: pointer;
+    min-width: 120px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Status pills
+// -----------------------------------------------------------------------------
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  &--active {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid rgba(16, 185, 129, 0.45);
+  }
+
+  // Pill rojo solido + texto blanco. Mas contundente que la version pastel para
+  // que un admin distinga "inactiva" de un vistazo aunque la fila tambien este rojiza.
+  &--inactive {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    border: 1px solid #b91c1c;
+    box-shadow: 0 1px 2px rgba(220, 38, 38, 0.25);
+    text-transform: uppercase;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Table
+// -----------------------------------------------------------------------------
+.table-wrap {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  overflow: auto;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+
+  &.inner {
+    margin-bottom: 0;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+th,
+td {
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  vertical-align: middle;
+}
+
+th {
+  background: linear-gradient(180deg, #eff6ff 0%, #e0e7ff 100%);
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--primary-900);
+}
+
+.sortable-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--primary-600);
+  }
+}
+
+.sort-icon {
+  font-size: 0.7rem;
+
+  &.active {
+    color: var(--primary-600);
+  }
+
+  &.inactive {
+    opacity: 0.3;
+    font-size: 0.85rem;
+  }
+}
+
+tbody tr:hover {
+  background: rgba(239, 246, 255, 0.65);
+}
+
+// Fila resaltada en rojo cuando el recurso esta inactivo (p. ej. organizaciones).
+// Usa box-shadow inset como "borde izquierdo" para no descuadrar el alto de la fila.
+tbody tr.row-inactive {
+  background-color: #fee2e2;
+  box-shadow: inset 4px 0 0 0 #dc2626;
+
+  &:hover {
+    background-color: #fecaca;
+  }
+
+  td {
+    color: #991b1b;
+    font-weight: 500;
+  }
+
+  .icon-btn {
+    color: #b91c1c;
+
+    &:hover {
+      background: rgba(220, 38, 38, 0.18);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Switch toggle (enable/disable). Compartido entre admin de Usuarios y Organizaciones
+// para que ambas paginas usen exactamente la misma forma visual de "encender / apagar".
+// -----------------------------------------------------------------------------
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .slider {
+      background-color: #10b981;
+
+      &::before {
+        transform: translateX(16px);
+      }
+    }
+
+    &:not(:checked) + .slider {
+      background-color: #fca5a5;
+    }
+
+    &:disabled + .slider {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #cbd5e1;
+  transition: 0.3s;
+
+  &::before {
+    position: absolute;
+    content: '';
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  &.round {
+    border-radius: 34px;
+
+    &::before {
+      border-radius: 50%;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Action buttons (icon + link styles for table rows)
+// -----------------------------------------------------------------------------
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--primary-600);
+    background: rgba(37, 99, 235, 0.1);
+  }
+
+  &.warn:hover {
+    color: #dc2626;
+    background: #fee2e2;
+  }
+
+  // Variante para acciones positivas (activar / aprobar). Color verde permanente para que el
+  // usuario distinga rapidamente "encender" vs el resto de iconos neutros.
+  &--success {
+    color: #047857;
+
+    &:hover {
+      color: #065f46;
+      background: rgba(16, 185, 129, 0.12);
+    }
+  }
+
+  // Variante "apagado": indica visualmente que la accion no aplica ahora (p. ej. revocar
+  // sesion cuando el usuario no tiene refresh token vivo). No usa :disabled atributo
+  // exclusivamente, por eso lo modelamos como clase: el [disabled] del boton se encarga de
+  // bloquear el click y aria, esta clase aporta el contraste visual.
+  &--muted {
+    color: var(--gray-300);
+    cursor: not-allowed;
+    opacity: 0.55;
+
+    &:hover {
+      // Cancela el hover azul/rojo heredado: en estado apagado nada de feedback hover.
+      color: var(--gray-300);
+      background: transparent;
+    }
+  }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--primary-600);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--primary-700);
+  }
+
+  &.danger {
+    color: #b91c1c;
+
+    &:hover {
+      background: rgba(220, 38, 38, 0.08);
+      color: #991b1b;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Standard buttons
+// -----------------------------------------------------------------------------
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--gray-300);
+  background: white;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  height: fit-content;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--gray-50);
+    border-color: var(--gray-400);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+    color: white;
+    border-color: var(--primary-600);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+    }
+  }
+
+  &.danger {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+    border-color: #b91c1c;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #b91c1c, #991b1b);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Modal shell (shared backdrop + dialog)
+// -----------------------------------------------------------------------------
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+  animation: admin-backdrop-in 0.18s ease-out;
+}
+
+.modal {
+  background: white;
+  border-radius: 14px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  animation: admin-modal-in 0.22s ease-out;
+  // Limitamos la altura al viewport para que en modales con muchos campos (formularios
+  // de alta de usuario, edicion, etc.) aparezca scroll interno en vez de cortar el footer.
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+
+  &--wide {
+    max-width: 520px;
+  }
+
+  &--xwide {
+    max-width: 720px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--gray-700);
+  }
+
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='search'],
+  input[type='number'],
+  input:not([type]),
+  select {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    background: white;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+  }
+
+  select {
+    cursor: pointer;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// .form-grid: rejilla de 2 columnas para distribuir campos cortos dentro de un
+// modal--xwide. Los hijos directos son <div> con label+input. Si un campo debe
+// ocupar toda la fila (password, organizacion, roles...), se le anade la clase
+// form-grid__full.
+// En viewports <640px colapsa a una sola columna.
+// -----------------------------------------------------------------------------
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem; // gap horizontal entre columnas; el vertical lo da el margin-bottom del input
+
+  .form-grid__full {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal__icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  &--info {
+    background: var(--primary-100);
+    color: var(--primary-700);
+  }
+
+  &--success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  &--warning {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  &--error {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  letter-spacing: -0.01em;
+}
+
+.modal__message {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  line-height: 1.55;
+}
+
+.modal__hint {
+  font-size: 0.8125rem;
+  color: var(--gray-600);
+  margin: 0 0 1rem;
+}
+
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+// -----------------------------------------------------------------------------
+// Inline error message
+// -----------------------------------------------------------------------------
+.err {
+  color: #b91c1c;
+  font-size: 0.875rem;
+  margin: 0 0 1rem;
+}
+
+// -----------------------------------------------------------------------------
+// Animations
+// -----------------------------------------------------------------------------
+@keyframes admin-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes admin-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

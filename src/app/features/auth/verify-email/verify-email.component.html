@@ -1,0 +1,90 @@
+<app-auth-layout>
+  <div auth-branding class="branding-panel">
+    <div class="branding-content">
+      <div class="logo">
+        <svg
+          class="logo-mark"
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="opsflow-verify-logo-grad" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#93c5fd" />
+              <stop offset="1" stop-color="#2563eb" />
+            </linearGradient>
+          </defs>
+          <rect width="48" height="48" rx="12" fill="url(#opsflow-verify-logo-grad)" />
+          <path
+            d="M14 24L22 32L34 16"
+            stroke="white"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="logo-text">OpsFlow</span>
+      </div>
+
+      <h1 class="branding-title branding-title--compact">Verifica tu correo</h1>
+      <p class="branding-description branding-description--register">
+        Un ultimo paso para activar tu cuenta y acceder a la plataforma con total seguridad.
+      </p>
+
+      <div class="features-list">
+        <div class="feature-item">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span>Cuentas protegidas y verificadas</span>
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <span>Activacion rapida del acceso</span>
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+          <span>Notificaciones en tu bandeja</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="branding-footer">
+      <p>&copy; 2024 OpsFlow. Todos los derechos reservados.</p>
+    </div>
+  </div>
+
+  <div auth-form>
+    <div class="form-container verify-email-panel">
+      <div class="form-header form-header--register">
+        <h2>Estado de verificacion</h2>
+        <p>Estamos confirmando tu enlace de activacion</p>
+      </div>
+
+      <div class="verify-card-inner" role="status" aria-live="polite">
+        @if (isLoading()) {
+          <div class="verify-loading">
+            <svg class="spinner verify-spinner" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="32" stroke-linecap="round" />
+            </svg>
+            <p class="verify-status-msg">Validando enlace...</p>
+          </div>
+        } @else {
+          <p class="verify-status-msg" [class.verify-status-msg--error]="isError()" [class.verify-status-msg--ok]="!isError()">
+            {{ statusMessage() }}
+          </p>
+          <a routerLink="/auth/login" class="btn btn-primary verify-cta">Ir a iniciar sesion</a>
+        }
+      </div>
+    </div>
+  </div>
+</app-auth-layout>

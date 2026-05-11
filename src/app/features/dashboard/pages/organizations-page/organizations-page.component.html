@@ -1,0 +1,979 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">Organizacion</h1>
+      <p class="page-sub">
+        Vista unificada de organizaciones, sedes y usuarios segun el rol logueado.
+      </p>
+    </div>
+
+    <div class="head-actions">
+      <button
+        *hasPermission="P.ORG_CREATE"
+        type="button"
+        class="btn primary"
+        (click)="openCreate()"
+      >
+        Nuevo
+      </button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <label class="filter">
+      <span>Filtrar por ID</span>
+      <input
+        type="text"
+        [ngModel]="idFilterSig()"
+        (ngModelChange)="idFilterSig.set($event)"
+        placeholder="ej. 1"
+      />
+    </label>
+
+    <label class="filter filter--grow">
+      <span>Buscar por nombre</span>
+      <input
+        type="search"
+        [ngModel]="nameFilterSig()"
+        (ngModelChange)="nameFilterSig.set($event)"
+        placeholder="Acme S.A.S"
+        autocomplete="off"
+      />
+    </label>
+  </div>
+
+  @if (loadError()) {
+    <p class="err">{{ loadError() }}</p>
+  }
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Tax ID</th>
+          <th>Creado por</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (o of filteredOrgs(); track o.id) {
+          <tr [class.row-inactive]="!o.active">
+            <td>{{ o.id }}</td>
+            <td>{{ o.name }}</td>
+            <td>{{ o.taxId }}</td>
+            <td class="creator-cell">{{ creatorLabel(o) }}</td>
+            <td>
+              @if (o.active) {
+                <span class="status-pill status-pill--active">Activa</span>
+              } @else {
+                <span class="status-pill status-pill--inactive">Inactiva</span>
+              }
+            </td>
+            <td class="actions">
+              <button
+                *hasPermission="P.USERS_UPDATE_ROLES"
+                type="button"
+                class="icon-btn"
+                (click)="openManagerModal(o)"
+                title="Asignar o cambiar manager"
+                aria-label="Asignar o cambiar manager"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <path d="m12 3 2.5 5 5.5.8-4 3.9.9 5.5L12 15.8 7.1 18.2 8 12.7 4 8.8 9.5 8z" />
+                </svg>
+              </button>
+              <button
+                *hasPermission="[P.USERS_LIST, P.USERS_MY_ORGANIZATION, P.USERS_CREATE]"
+                type="button"
+                class="icon-btn"
+                (click)="openUsers(o)"
+                title="Asociar usuarios"
+                aria-label="Asociar usuarios"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </button>
+              <button
+                *hasPermission="[P.LOCATION_BY_ORG, P.LOCATION_LIST]"
+                type="button"
+                class="icon-btn"
+                (click)="openLocations(o)"
+                title="Gestionar sedes"
+                aria-label="Gestionar sedes"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </button>
+
+              
+
+              <button
+                *hasPermission="P.ORG_UPDATE"
+                type="button"
+                class="icon-btn"
+                (click)="openEdit(o)"
+                title="Editar organizacion"
+                aria-label="Editar organizacion"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+              </button>
+
+              <button
+                *hasPermission="P.ORG_DELETE"
+                type="button"
+                class="icon-btn warn"
+                (click)="confirmDelete(o)"
+                title="Eliminar organizacion"
+                aria-label="Eliminar organizacion"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                  <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+              <label
+                *hasPermission="o.active ? P.ORG_DEACTIVATE : P.ORG_ACTIVATE"
+                class="switch"
+                [title]="o.active ? 'Desactivar organizacion' : 'Activar organizacion'"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="o.active"
+                  (click)="toggleOrgActive($event, o)"
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6">
+              @if (loading()) {
+                Cargando organizaciones...
+              } @else if (orgs().length === 0) {
+                Sin organizaciones registradas.
+              } @else {
+                Ninguna organizacion coincide con los filtros.
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- Manager modal                                                       -->
+<!-- =================================================================== -->
+@if (managerModalOrg(); as org) {
+  <div class="modal-backdrop" (click)="closeManagerModal()" role="presentation">
+    <div
+      class="modal modal--wide org-manager-assign-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="org-manager-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div class="modal__icon modal__icon--info" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3 2.5 5 5.5.8-4 3.9.9 5.5L12 15.8 7.1 18.2 8 12.7 4 8.8 9.5 8z" />
+          </svg>
+        </div>
+        <div>
+          <h2 id="org-manager-modal-title" class="modal__title">
+            Manager de "{{ org.name }}"
+          </h2>
+          <p class="locations-modal__subtitle">
+            Asigna o reemplaza el manager unico de la organizacion directamente desde la tabla.
+          </p>
+        </div>
+      </div>
+
+      <div class="org-users-modal__manager-summary" aria-live="polite">
+        <div class="org-users-modal__manager-summary-head">
+          <h3 class="org-users-modal__section-title">Manager actual</h3>
+          <span class="status-pill"
+            [class.status-pill--active]="!managerModalLoading() && activeManagerModalUsers().length === 1"
+            [class.status-pill--inactive]="!managerModalLoading() && activeManagerModalUsers().length !== 1">
+            {{
+              managerModalLoading()
+                ? 'Cargando'
+                : (activeManagerModalUsers().length === 1 ? 'Valido' : (activeManagerModalUsers().length === 0 ? 'Vacante' : 'Conflicto'))
+            }}
+          </span>
+        </div>
+
+        @if (managerModalLoading()) {
+          <p class="loading-msg">Cargando manager actual...</p>
+        } @else if (activeManagerModalUsers().length > 0) {
+          <div class="org-users-modal__manager-list">
+            @for (m of activeManagerModalUsers(); track m.id) {
+              <div class="org-users-modal__manager-card">
+                <strong>{{ m.name }} {{ m.lastname }}</strong>
+                <span>{{ m.username }} · {{ m.email }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="lookup-empty">La organizacion no tiene manager activo configurado.</p>
+        }
+      </div>
+
+      @if (managerModalError()) {
+        <p class="err">{{ managerModalError() }}</p>
+      }
+
+      <label class="org-form__field org-form__field--full">
+        <span>Buscar candidato a manager</span>
+        <input
+          type="search"
+          [ngModel]="managerModalSearchSig()"
+          (ngModelChange)="setManagerModalSearch($event)"
+          placeholder="Escribe nombre, usuario o email"
+          autocomplete="off"
+        />
+        @if (managerModalSuggestions().length > 0) {
+          <div class="lookup-list" role="listbox" aria-label="Sugerencias para manager">
+            @for (u of managerModalSuggestions(); track u.id) {
+              <button
+                type="button"
+                class="lookup-item"
+                (click)="selectManagerModalCandidate(u)"
+              >
+                <span class="lookup-item__main">{{ u.name }} {{ u.lastname }}</span>
+                <span class="lookup-item__sub">
+                  {{ u.username }} · {{ u.email }}{{ u.organizationId != null ? ' · org #' + u.organizationId : '' }}
+                </span>
+              </button>
+            }
+          </div>
+        } @else if (managerModalSearchSig().trim()) {
+          <p class="lookup-empty">No hay candidatos disponibles para manager.</p>
+        }
+      </label>
+
+      @if (managerModalSelectedUserId() != null) {
+        <p class="lookup-selected">Candidato seleccionado: {{ managerModalSearchSig() }}</p>
+      }
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="closeManagerModal()">Cancelar</button>
+        <button
+          type="button"
+          class="btn primary"
+          (click)="confirmManagerModalAssign()"
+          [disabled]="managerModalSaving() || managerModalSelectedUserId() == null"
+        >
+          @if (managerModalSaving()) { Guardando... } @else { Guardar manager }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Users modal                                                         -->
+<!-- =================================================================== -->
+@if (usersModalOrg(); as org) {
+  <div class="modal-backdrop" (click)="closeUsers()" role="presentation">
+    <div
+      class="modal modal--xwide org-users-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="org-users-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div class="modal__icon modal__icon--info" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </div>
+        <div>
+          <h2 id="org-users-modal-title" class="modal__title">
+            Usuarios de "{{ org.name }}"
+          </h2>
+          <p class="locations-modal__subtitle">
+            Invita usuarios y, si eres admin, asocia o desasocia usuarios existentes.
+          </p>
+        </div>
+      </div>
+
+      <div class="org-users-modal__manager-summary" aria-live="polite">
+        <div class="org-users-modal__manager-summary-head">
+          <h3 class="org-users-modal__section-title">Manager activo de la organizacion</h3>
+          <span class="status-pill"
+            [class.status-pill--active]="!orgUsersLoading() && activeOrgManagers().length === 1"
+            [class.status-pill--inactive]="!orgUsersLoading() && activeOrgManagers().length !== 1">
+            {{
+              orgUsersLoading()
+                ? 'Cargando'
+                : (activeOrgManagers().length === 1 ? 'Valido' : (activeOrgManagers().length === 0 ? 'Vacante' : 'Conflicto'))
+            }}
+          </span>
+        </div>
+
+        @if (orgUsersLoading()) {
+          <p class="loading-msg">Resolviendo manager activo...</p>
+        } @else if (activeOrgManagers().length > 0) {
+          <div class="org-users-modal__manager-list">
+            @for (m of activeOrgManagers(); track m.id) {
+              <div class="org-users-modal__manager-card">
+                <strong>{{ m.name }} {{ m.lastname }}</strong>
+                <span>{{ m.username }} · {{ m.email }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="lookup-empty">
+            Esta organizacion no tiene manager activo. Debes asignar uno para mantener la integridad operativa.
+          </p>
+        }
+      </div>
+
+      @if (authService.isAdmin()) {
+        <div class="org-users-modal__associate">
+          <label class="org-users-modal__field">
+            <span>Asociar usuario existente</span>
+            <input
+              type="search"
+              [ngModel]="associateSearchSig()"
+              (ngModelChange)="setAssociateSearch($event)"
+              placeholder="Escribe nombre, usuario o email"
+              autocomplete="off"
+            />
+            @if (associateSuggestions().length > 0) {
+              <div class="lookup-list" role="listbox" aria-label="Sugerencias de usuarios">
+                @for (u of associateSuggestions(); track u.id) {
+                  <button
+                    type="button"
+                    class="lookup-item"
+                    (click)="selectAssociateCandidate(u)"
+                  >
+                    <span class="lookup-item__main">{{ u.name }} {{ u.lastname }}</span>
+                    <span class="lookup-item__sub">{{ u.username }} · {{ u.email }}</span>
+                  </button>
+                }
+              </div>
+            } @else if (associateSearchSig().trim()) {
+              <p class="lookup-empty">No hay coincidencias para asociar.</p>
+            }
+            @if (associateUserId() != null) {
+              <p class="lookup-selected">Usuario seleccionado: {{ associateSearchSig() }}</p>
+            }
+          </label>
+          <button
+            type="button"
+            class="btn primary"
+            (click)="associateExistingUser()"
+            [disabled]="associateSaving() || associateUserId() == null"
+          >
+            @if (associateSaving()) { Asociando... } @else { Asociar }
+          </button>
+        </div>
+      }
+
+      <div *hasPermission="P.USERS_CREATE" class="org-users-modal__invite">
+        <button
+          type="button"
+          class="org-users-modal__disclosure"
+          (click)="toggleInviteDisclosure()"
+          [attr.aria-expanded]="inviteDisclosureOpen()"
+          aria-controls="org-users-invite-panel"
+        >
+          <span class="org-users-modal__disclosure-main">
+            <span class="org-users-modal__section-title">Invitar nuevo usuario</span>
+            <span class="org-users-modal__disclosure-subtitle">
+              Despliega el formulario solo cuando necesites registrar un invitado.
+            </span>
+          </span>
+          <span class="org-users-modal__disclosure-icon" [class.is-open]="inviteDisclosureOpen()" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </span>
+        </button>
+
+        @if (inviteDisclosureOpen()) {
+          <div id="org-users-invite-panel" class="org-users-modal__invite-panel">
+            @if (inviteError()) {
+              <p class="err">{{ inviteError() }}</p>
+            }
+            <div class="form-grid">
+              <div>
+                <label for="org-invite-username">Usuario</label>
+                <input id="org-invite-username" type="text" [(ngModel)]="inviteForm.username" />
+              </div>
+              <div>
+                <label for="org-invite-email">Email</label>
+                <input id="org-invite-email" type="email" [(ngModel)]="inviteForm.email" />
+              </div>
+              <div>
+                <label for="org-invite-name">Nombre</label>
+                <input id="org-invite-name" type="text" [(ngModel)]="inviteForm.name" />
+              </div>
+              <div>
+                <label for="org-invite-lastname">Apellido</label>
+                <input id="org-invite-lastname" type="text" [(ngModel)]="inviteForm.lastname" />
+              </div>
+              <div class="form-grid__full">
+                <label for="org-invite-password">Contrasena temporal</label>
+                <input id="org-invite-password" type="password" [(ngModel)]="inviteForm.password" />
+              </div>
+            </div>
+            <div class="org-users-modal__invite-actions">
+              <button
+                type="button"
+                class="btn primary"
+                (click)="saveInvitedUser()"
+                [disabled]="inviteSaving()"
+              >
+                @if (inviteSaving()) { Invitando... } @else { Invitar usuario }
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="org-users-modal__body">
+        @if (orgUsersLoading()) {
+          <p class="loading-msg">Cargando usuarios...</p>
+        } @else if (orgUsersError()) {
+          <p class="err">{{ orgUsersError() }}</p>
+        } @else if (orgUsers().length === 0) {
+          <p class="loading-msg">No hay usuarios asociados a esta organizacion.</p>
+        } @else {
+          <div class="table-wrap inner">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Usuario</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Estado</th>
+                  @if (authService.isAdmin()) {
+                    <th>Acciones</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (u of orgUsers(); track u.id) {
+                  <tr [class.row-inactive]="!u.enabled">
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.name }} {{ u.lastname }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>
+                      @if (u.enabled) {
+                        <span class="status-pill status-pill--active">Activo</span>
+                      } @else {
+                        <span class="status-pill status-pill--inactive">Inactivo</span>
+                      }
+                    </td>
+                    @if (authService.isAdmin()) {
+                      <td class="actions">
+                        <button
+                          type="button"
+                          class="icon-btn"
+                          (click)="assignOrganizationManager(u)"
+                          title="{{ isOrgManager(u) ? 'Dejar como manager oficial' : 'Asignar como manager' }}"
+                          aria-label="Asignar como manager"
+                          [disabled]="!u.enabled"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            width="18" height="18" aria-hidden="true">
+                            <path d="m12 3 2.5 5 5.5.8-4 3.9.9 5.5L12 15.8 7.1 18.2 8 12.7 4 8.8 9.5 8z" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="icon-btn warn"
+                          (click)="confirmDetachUser(u)"
+                          title="Desasociar usuario"
+                          aria-label="Desasociar usuario"
+                          [disabled]="isOnlyActiveManager(u)"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            width="18" height="18" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                          </svg>
+                        </button>
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="closeUsers()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Locations modal (sedes)                                             -->
+<!-- =================================================================== -->
+@if (locationsModalOrg(); as org) {
+  <div class="modal-backdrop" (click)="closeLocations()" role="presentation">
+    <div
+      class="modal modal--wide locations-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="locations-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div class="modal__icon modal__icon--info" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        </div>
+        <div>
+          <h2 id="locations-modal-title" class="modal__title">
+            Sedes de "{{ org.name }}"
+          </h2>
+          <p class="locations-modal__subtitle">
+            @if (editingLocationId() != null) {
+              Editando sede #{{ editingLocationId() }}.
+            } @else {
+              Lista, crea y administra las sedes asociadas a esta organizacion.
+            }
+          </p>
+        </div>
+      </div>
+
+      <!-- Form crear/editar sede (gateado por permiso correspondiente) -->
+      <div
+        *hasPermission="editingLocationId() != null ? P.LOCATION_UPDATE : P.LOCATION_CREATE"
+        class="locations-modal__form"
+      >
+        <label class="locations-modal__field locations-modal__field--name">
+          <span>Nombre</span>
+          <input
+            type="text"
+            [(ngModel)]="locationForm.name"
+            placeholder="Sede principal"
+            autocomplete="off"
+          />
+        </label>
+        <label class="locations-modal__field">
+          <span>Ciudad</span>
+          <input
+            type="text"
+            [ngModel]="locationForm.city"
+            (ngModelChange)="locationForm.city = $event"
+            placeholder="Bogota"
+            autocomplete="off"
+          />
+        </label>
+        <label class="locations-modal__field locations-modal__field--full">
+          <span>Direccion</span>
+          <input
+            type="text"
+            [ngModel]="locationForm.address"
+            (ngModelChange)="locationForm.address = $event"
+            placeholder="Calle 123 # 4-56"
+            autocomplete="off"
+          />
+        </label>
+        <div class="locations-modal__form-actions">
+          @if (editingLocationId() != null) {
+            <button
+              type="button"
+              class="btn"
+              (click)="cancelEditLocation()"
+              [disabled]="locationSaving()"
+            >
+              Cancelar
+            </button>
+          }
+          <button
+            type="button"
+            class="btn primary"
+            (click)="submitLocation()"
+            [disabled]="locationSaving() || !locationForm.name.trim()"
+          >
+            @if (locationSaving()) {
+              Guardando...
+            } @else if (editingLocationId() != null) {
+              Actualizar sede
+            } @else {
+              Crear sede
+            }
+          </button>
+        </div>
+      </div>
+
+      <div class="locations-modal__body">
+        @if (locationsLoading()) {
+          <p class="loading-msg">Cargando sedes...</p>
+        } @else if (locationsError()) {
+          <p class="err">{{ locationsError() }}</p>
+        } @else if (locations().length === 0) {
+          <p class="loading-msg">Aun no hay sedes registradas para esta organizacion.</p>
+        } @else {
+          <div class="table-wrap inner">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Ciudad</th>
+                  <th>Direccion</th>
+                  @if (
+                    authService.hasPermission(P.LOCATION_UPDATE) ||
+                    authService.hasPermission(P.LOCATION_DELETE)
+                  ) {
+                    <th>Acciones</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (loc of locations(); track loc.id) {
+                  <tr [class.row-editing]="editingLocationId() === loc.id">
+                    <td>{{ loc.id }}</td>
+                    <td>{{ loc.name }}</td>
+                    <td>{{ loc.city || '—' }}</td>
+                    <td>{{ loc.address || '—' }}</td>
+                    @if (
+                      authService.hasPermission(P.LOCATION_UPDATE) ||
+                      authService.hasPermission(P.LOCATION_DELETE)
+                    ) {
+                      <td class="actions">
+                        <button
+                          *hasPermission="P.LOCATION_UPDATE"
+                          type="button"
+                          class="icon-btn"
+                          (click)="startEditLocation(loc)"
+                          title="Editar sede"
+                          aria-label="Editar sede"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            width="18" height="18" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                          </svg>
+                        </button>
+                        <button
+                          *hasPermission="P.LOCATION_DELETE"
+                          type="button"
+                          class="icon-btn warn"
+                          (click)="confirmDeleteLocation(loc)"
+                          title="Eliminar sede"
+                          aria-label="Eliminar sede"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            width="18" height="18" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                          </svg>
+                        </button>
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="closeLocations()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Create / Edit modal                                                 -->
+<!-- =================================================================== -->
+@if (modalCreate() || modalEdit()) {
+  <div class="modal-backdrop" (click)="closeModals()" role="presentation">
+    <div
+      class="modal modal--xwide"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="org-form-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div class="modal__icon modal__icon--info" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" />
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+          </svg>
+        </div>
+        <h2 id="org-form-title" class="modal__title">
+          @if (modalCreate()) { Nueva organizacion } @else { Editar #{{ editingId() }} }
+        </h2>
+      </div>
+
+      <div class="org-form">
+        <label class="org-form__field org-form__field--full">
+          <span>Nombre</span>
+          <input type="text" [(ngModel)]="form.name" placeholder="Acme S.A.S" />
+        </label>
+
+        <label class="org-form__field">
+          <span>Tax ID</span>
+          <input type="text" [(ngModel)]="form.taxId" placeholder="900123456-7" />
+        </label>
+
+        <label class="org-form__field">
+          <span>Plan limit</span>
+          <input type="number" min="1" [(ngModel)]="form.planLimit" />
+        </label>
+
+        <label class="org-form__field">
+          <span>Email</span>
+          <input type="email" [(ngModel)]="form.email" placeholder="contacto@acme.com" />
+        </label>
+
+        <label class="org-form__field">
+          <span>Telefono</span>
+          <input type="tel" [(ngModel)]="form.phone" placeholder="+57 ..." />
+        </label>
+
+        <label class="org-form__field org-form__field--full">
+          <span>Direccion</span>
+          <input type="text" [(ngModel)]="form.address" placeholder="Calle 123 # 4-56" />
+        </label>
+
+        <label class="org-form__check">
+          <input type="checkbox" [(ngModel)]="form.active" />
+          <span>Organizacion activa</span>
+        </label>
+      </div>
+
+      @if (modalCreate()) {
+        <div class="org-manager-panel">
+          <div class="org-manager-panel__header">
+            <div>
+              <h3 class="org-manager-panel__title">Asignar manager</h3>
+              <p class="org-manager-panel__hint">
+                La creacion de la organizacion requiere seleccionar desde el inicio un usuario activo que no sea manager actual de otra organizacion.
+              </p>
+            </div>
+          </div>
+
+          @if (createOrgError()) {
+            <p class="err">{{ createOrgError() }}</p>
+          }
+
+          <label class="org-form__field org-form__field--full">
+            <span>Buscar manager existente</span>
+            <input
+              type="search"
+              [ngModel]="managerSearchSig()"
+              (ngModelChange)="setManagerSearch($event)"
+              placeholder="Escribe nombre, usuario o email"
+              autocomplete="off"
+            />
+            @if (managerSuggestions().length > 0) {
+              <div class="lookup-list" role="listbox" aria-label="Sugerencias de managers">
+                @for (u of managerSuggestions(); track u.id) {
+                  <button
+                    type="button"
+                    class="lookup-item"
+                    (click)="selectManagerCandidate(u)"
+                  >
+                    <span class="lookup-item__main">{{ u.name }} {{ u.lastname }}</span>
+                    <span class="lookup-item__sub">
+                      {{ u.username }} · {{ u.email }}{{ u.organizationId != null ? ' · org #' + u.organizationId : '' }}
+                    </span>
+                  </button>
+                }
+              </div>
+            } @else if (managerSearchSig().trim()) {
+              <p class="lookup-empty">No hay coincidencias para manager.</p>
+            }
+          </label>
+          @if (selectedManagerUserId() != null) {
+            <p class="lookup-selected">Manager seleccionado: {{ managerSearchSig() }}</p>
+          }
+        </div>
+      }
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="closeModals()">Cancelar</button>
+        <button
+          type="button"
+          class="btn primary"
+          (click)="modalCreate() ? submitCreate() : submitEdit()"
+          [disabled]="loading() || (modalCreate() ? !canSubmitCreate() : !form.name.trim())"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Confirm modal                                                       -->
+<!-- =================================================================== -->
+@if (confirmReq(); as cfg) {
+  <div class="modal-backdrop" (click)="cancelConfirm()" role="presentation">
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="org-confirm-title"
+      aria-describedby="org-confirm-message"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div
+          class="modal__icon"
+          [class.modal__icon--warning]="!cfg.danger"
+          [class.modal__icon--error]="cfg.danger"
+          aria-hidden="true"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86 a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <h2 id="org-confirm-title" class="modal__title">{{ cfg.title }}</h2>
+      </div>
+
+      <p id="org-confirm-message" class="modal__message">{{ cfg.message }}</p>
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="cancelConfirm()">
+          {{ cfg.cancelLabel || 'Cancelar' }}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.danger]="cfg.danger"
+          [class.primary]="!cfg.danger"
+          (click)="acceptConfirm()"
+        >
+          {{ cfg.confirmLabel || 'Confirmar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Notice modal                                                        -->
+<!-- =================================================================== -->
+@if (notice(); as n) {
+  <div class="modal-backdrop" (click)="closeNotice()" role="presentation">
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="org-notice-title"
+      aria-describedby="org-notice-message"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div
+          class="modal__icon"
+          [class.modal__icon--success]="n.kind === 'success'"
+          [class.modal__icon--error]="n.kind === 'error'"
+          [class.modal__icon--warning]="n.kind === 'warning'"
+          [class.modal__icon--info]="n.kind === 'info'"
+          aria-hidden="true"
+        >
+          @switch (n.kind) {
+            @case ('success') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            }
+            @case ('error') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+            }
+            @case ('warning') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86 a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            }
+            @default {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+            }
+          }
+        </div>
+        <h2 id="org-notice-title" class="modal__title">{{ n.title }}</h2>
+      </div>
+
+      <p id="org-notice-message" class="modal__message">{{ n.message }}</p>
+
+      <div class="modal__actions">
+        <button type="button" class="btn primary" (click)="closeNotice()">Entendido</button>
+      </div>
+    </div>
+  </div>
+}

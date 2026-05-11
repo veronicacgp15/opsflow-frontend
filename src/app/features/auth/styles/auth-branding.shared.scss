@@ -1,0 +1,151 @@
+// Shared branding column content (projected into app-auth-layout). Imported by login/register.
+
+.branding-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  flex: 1;
+}
+
+.branding-content {
+  max-width: 420px;
+  padding: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2.25rem;
+}
+
+.logo-mark {
+  flex-shrink: 0;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.logo-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28), 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.branding-title {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.12;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 2px 12px rgba(0, 0, 0, 0.25),
+    0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+.branding-title--compact {
+  font-size: 2.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.branding-description {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 2.25rem;
+  line-height: 1.65;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+.branding-description--register {
+  font-size: 1.0625rem;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  color: #f0f4ff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+.feature-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.benefit-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.benefit-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.benefit-content {
+  h4 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #f0f4ff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  }
+
+  p {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.45;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.branding-footer {
+  width: 100%;
+  max-width: 420px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 3rem;
+  padding-bottom: 0.25rem;
+  color: rgb(255, 255, 255);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgb(255, 255, 255);
+
+  p {
+    margin: 0;
+  }
+}

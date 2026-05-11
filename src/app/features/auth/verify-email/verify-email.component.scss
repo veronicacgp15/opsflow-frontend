@@ -1,0 +1,45 @@
+@use '../styles/auth-branding.shared' as *;
+@use '../styles/auth-form.shared' as *;
+
+.form-container.verify-email-panel {
+  max-width: 420px;
+}
+
+.verify-card-inner {
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.verify-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.verify-spinner {
+  width: 36px;
+  height: 36px;
+  color: var(--primary-600);
+}
+
+.verify-status-msg {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--gray-700);
+  line-height: 1.55;
+}
+
+.verify-status-msg--ok {
+  color: var(--gray-800);
+}
+
+.verify-status-msg--error {
+  color: var(--error);
+}
+
+.verify-cta {
+  margin-top: 1.5rem;
+  width: 100%;
+  text-decoration: none;
+}

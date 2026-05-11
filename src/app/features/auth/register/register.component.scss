@@ -1,0 +1,16 @@
+@use '../styles/auth-branding.shared' as *;
+@use '../styles/auth-form.shared' as *;
+
+.form-container {
+  width: 100%;
+  max-width: 480px;
+  padding: 1rem 0;
+}
+
+.register-form {
+  gap: 1.25rem;
+}
+
+.form-group {
+  gap: 0.375rem;
+}

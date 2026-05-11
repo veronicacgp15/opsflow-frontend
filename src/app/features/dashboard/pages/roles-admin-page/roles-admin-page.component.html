@@ -1,0 +1,476 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">Roles</h1>
+    </div>
+    <button
+      *hasPermission="P.AUTH_ROLES_CREATE"
+      type="button"
+      class="btn primary"
+      (click)="openCreate()"
+    >
+      Nuevo
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <label class="filter">
+      <span>Filtrar por ID</span>
+      <input
+        type="text"
+        [ngModel]="idFilterSig()"
+        (ngModelChange)="idFilterSig.set($event)"
+        placeholder="ej. 1"
+      />
+    </label>
+
+    <label class="filter filter--grow">
+      <span>Buscar por nombre</span>
+      <input
+        type="search"
+        [ngModel]="nameFilterSig()"
+        (ngModelChange)="nameFilterSig.set($event)"
+        placeholder="ROLE_EJEMPLO"
+        autocomplete="off"
+      />
+    </label>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of filteredRoles(); track r.id) {
+          <tr>
+            <td>{{ r.id }}</td>
+            <td><code>{{ r.name }}</code></td>
+            <td class="actions">
+              <button
+                *hasPermission="P.AUTH_ROLES_PERMISSIONS_SET"
+                type="button"
+                class="icon-btn"
+                (click)="openPermissions(r)"
+                title="Gestionar permisos"
+                aria-label="Gestionar permisos"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <polyline points="9 12 11 14 15 10" />
+                </svg>
+              </button>
+              <button
+                *hasPermission="P.AUTH_ROLES_UPDATE"
+                type="button"
+                class="icon-btn"
+                (click)="openEdit(r)"
+                title="Editar rol"
+                aria-label="Editar rol"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+              </button>
+              <button
+                *hasPermission="P.AUTH_ROLES_DELETE"
+                type="button"
+                class="icon-btn warn"
+                (click)="confirmDelete(r)"
+                title="Eliminar rol"
+                aria-label="Eliminar rol"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  width="18" height="18" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                  <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="3">Sin datos</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- Create role modal                                                   -->
+<!-- =================================================================== -->
+@if (modalCreate()) {
+  <div class="modal-backdrop" (click)="closeModals()" role="presentation">
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="role-create-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div class="modal__icon modal__icon--info" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </div>
+        <h2 id="role-create-title" class="modal__title">Nuevo rol</h2>
+      </div>
+
+      <p class="modal__hint">Usa el prefijo convencional <code>ROLE_</code> (ej. ROLE_AUDITOR).</p>
+
+      <label for="role-create-name">Nombre</label>
+      <input
+        id="role-create-name"
+        type="text"
+        [(ngModel)]="formName"
+        placeholder="ROLE_AUDITOR"
+        autocomplete="off"
+      />
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="closeModals()">Cancelar</button>
+        <button
+          type="button"
+          class="btn primary"
+          (click)="submitCreate()"
+          [disabled]="loading() || !formName.trim()"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Edit role modal                                                     -->
+<!-- =================================================================== -->
+@if (modalEdit()) {
+  <div class="modal-backdrop" (click)="closeModals()" role="presentation">
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="role-edit-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div class="modal__icon modal__icon--info" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z" />
+          </svg>
+        </div>
+        <h2 id="role-edit-title" class="modal__title">Editar rol #{{ editingId() }}</h2>
+      </div>
+
+      <label for="role-edit-name">Nombre</label>
+      <input
+        id="role-edit-name"
+        type="text"
+        [(ngModel)]="formName"
+        autocomplete="off"
+      />
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="closeModals()">Cancelar</button>
+        <button
+          type="button"
+          class="btn primary"
+          (click)="submitEdit()"
+          [disabled]="loading() || !formName.trim()"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Confirm modal                                                       -->
+<!-- =================================================================== -->
+@if (confirmReq(); as cfg) {
+  <div class="modal-backdrop" (click)="cancelConfirm()" role="presentation">
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="role-confirm-title"
+      aria-describedby="role-confirm-message"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div
+          class="modal__icon"
+          [class.modal__icon--warning]="!cfg.danger"
+          [class.modal__icon--error]="cfg.danger"
+          aria-hidden="true"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <h2 id="role-confirm-title" class="modal__title">{{ cfg.title }}</h2>
+      </div>
+
+      <p id="role-confirm-message" class="modal__message">{{ cfg.message }}</p>
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="cancelConfirm()">
+          {{ cfg.cancelLabel || 'Cancelar' }}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.danger]="cfg.danger"
+          [class.primary]="!cfg.danger"
+          (click)="acceptConfirm()"
+        >
+          {{ cfg.confirmLabel || 'Confirmar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Permissions modal                                                   -->
+<!-- =================================================================== -->
+@if (permissionsModalRole(); as role) {
+  <div class="modal-backdrop" (click)="closePermissions()" role="presentation">
+    <div
+      class="modal modal--wide perm-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="role-permissions-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div class="modal__icon modal__icon--info" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <polyline points="9 12 11 14 15 10" />
+          </svg>
+        </div>
+        <div>
+          <h2 id="role-permissions-title" class="modal__title">
+            Permisos de {{ role.name }}
+          </h2>
+          <p class="perm-modal__subtitle">
+            Define a que endpoints tiene acceso este rol. Selecciona endpoints individuales o
+            usa el toggle por seccion.
+          </p>
+        </div>
+      </div>
+
+      <div class="perm-modal__toolbar">
+        <label class="perm-modal__search">
+          <svg class="perm-modal__search-icon" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Buscar permiso..."
+            [ngModel]="permissionsSearchSig()"
+            (ngModelChange)="permissionsSearchSig.set($event)"
+            autocomplete="off"
+          />
+        </label>
+        <button
+          type="button"
+          class="perm-modal__toggle-all"
+          (click)="toggleAllGroupsExpanded()"
+          [title]="allGroupsExpanded() ? 'Colapsar todos los grupos' : 'Expandir todos los grupos'"
+        >
+          @if (allGroupsExpanded()) {
+            Colapsar todo
+          } @else {
+            Expandir todo
+          }
+        </button>
+        <span class="perm-modal__counter">
+          {{ selectedPermissionIds().size }} / {{ permissionsCatalog().length }}
+        </span>
+      </div>
+
+      <div class="perm-modal__body">
+        @if (permissionsLoading()) {
+          <p class="perm-modal__empty">Cargando permisos...</p>
+        } @else if (filteredPermissionGroups().length === 0) {
+          <p class="perm-modal__empty">
+            @if (permissionsCatalog().length === 0) {
+              No hay permisos en el catalogo. Reinicia auth-service para sembrarlos.
+            } @else {
+              Ningun permiso coincide con la busqueda.
+            }
+          </p>
+        } @else {
+          @for (group of filteredPermissionGroups(); track group.service) {
+            @let expanded = isGroupExpanded(group.service);
+            <section class="perm-group" [class.perm-group--expanded]="expanded">
+              <header class="perm-group__head">
+                <!-- Checkbox separado: clic en el checkbox toggle-a el grupo entero,
+                     no debe colapsar/expandir. -->
+                <label class="perm-group__toggle" (click)="$event.stopPropagation()">
+                  <input
+                    type="checkbox"
+                    [checked]="isGroupAllSelected(group)"
+                    [indeterminate]="isGroupPartiallySelected(group)"
+                    (change)="toggleAllInGroup(group, $any($event.target).checked)"
+                  />
+                </label>
+
+                <!-- Botón principal: el resto del header alterna expandido/colapsado. -->
+                <button
+                  type="button"
+                  class="perm-group__expand"
+                  (click)="toggleGroupExpanded(group.service)"
+                  [attr.aria-expanded]="expanded"
+                >
+                  <svg
+                    class="perm-group__caret"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                  <span class="perm-group__title">{{ group.label }}</span>
+                  <span class="perm-group__count">
+                    {{ countSelectedInGroup(group) }} / {{ group.items.length }}
+                  </span>
+                </button>
+              </header>
+
+              @if (expanded) {
+                <ul class="perm-list">
+                  @for (p of group.items; track p.id) {
+                    <li class="perm-row">
+                      <label class="perm-row__label">
+                        <input
+                          type="checkbox"
+                          [checked]="selectedPermissionIds().has(p.id)"
+                          (change)="togglePermission(p.id, $any($event.target).checked)"
+                        />
+                        <span class="perm-row__title">
+                          {{ p.description || p.urlPattern }}
+                        </span>
+                      </label>
+                    </li>
+                  }
+                </ul>
+              }
+            </section>
+          }
+        }
+      </div>
+
+      <div class="modal__actions">
+        <button type="button" class="btn" (click)="closePermissions()">Cancelar</button>
+        <button
+          type="button"
+          class="btn primary"
+          (click)="savePermissions()"
+          [disabled]="permissionsSaving() || permissionsLoading()"
+        >
+          @if (permissionsSaving()) { Guardando... } @else { Guardar }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =================================================================== -->
+<!-- Notice modal                                                        -->
+<!-- =================================================================== -->
+@if (notice(); as n) {
+  <div class="modal-backdrop" (click)="closeNotice()" role="presentation">
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="role-notice-title"
+      aria-describedby="role-notice-message"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__header">
+        <div
+          class="modal__icon"
+          [class.modal__icon--info]="n.kind === 'info'"
+          [class.modal__icon--success]="n.kind === 'success'"
+          [class.modal__icon--warning]="n.kind === 'warning'"
+          [class.modal__icon--error]="n.kind === 'error'"
+          aria-hidden="true"
+        >
+          @switch (n.kind) {
+            @case ('success') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            }
+            @case ('error') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+            }
+            @case ('warning') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            }
+            @default {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+            }
+          }
+        </div>
+        <h2 id="role-notice-title" class="modal__title">{{ n.title }}</h2>
+      </div>
+
+      <p id="role-notice-message" class="modal__message">{{ n.message }}</p>
+
+      <div class="modal__actions">
+        <button type="button" class="btn primary" (click)="closeNotice()">Entendido</button>
+      </div>
+    </div>
+  </div>
+}
