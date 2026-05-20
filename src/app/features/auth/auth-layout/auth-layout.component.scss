@@ -38,6 +38,12 @@
   justify-content: flex-start;
   color: white;
 
+  /* Global styles.scss fuerza p { color: gray-600 } — restaurar blanco en el pie. */
+  .branding-footer p {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  }
+
   @media (max-width: 1024px) {
     display: none;
   }
@@ -51,6 +57,22 @@
   padding: 2.75rem 3rem;
   background: #ffffff;
   overflow-y: auto;
+}
+
+:host.auth-layout--register {
+  .auth-card {
+    overflow: visible;
+  }
+
+  .auth-shell {
+    min-height: min(680px, calc(100vh - 2.5rem));
+  }
+
+  .auth-form-panel {
+    overflow: visible;
+    align-items: center;
+    padding: clamp(1.25rem, 2.5vh, 2rem) clamp(1.5rem, 3vw, 2.25rem);
+  }
 }
 
 @media (max-width: 1024px) {

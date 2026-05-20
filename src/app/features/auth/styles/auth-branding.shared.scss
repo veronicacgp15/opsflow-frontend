@@ -48,8 +48,8 @@
 }
 
 .branding-title--compact {
-  font-size: 2.75rem;
-  margin-bottom: 1.25rem;
+  font-size: 2.25rem;
+  margin-bottom: 1rem;
 }
 
 .branding-description {
@@ -61,7 +61,8 @@
 }
 
 .branding-description--register {
-  font-size: 1.0625rem;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .features-list {
@@ -89,7 +90,7 @@
 .benefits-list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .benefit-item {
@@ -139,13 +140,13 @@
   margin-top: auto;
   padding-top: 3rem;
   padding-bottom: 0.25rem;
-  color: rgb(255, 255, 255);
   font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  text-shadow: 0 1px 2px rgb(255, 255, 255);
 
   p {
     margin: 0;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
   }
 }

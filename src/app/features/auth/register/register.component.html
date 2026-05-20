@@ -1,4 +1,4 @@
-<app-auth-layout>
+<app-auth-layout class="auth-layout--register">
   <div auth-branding class="branding-panel">
     <div class="branding-content">
       <div class="logo">
@@ -197,45 +197,96 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="username" class="form-label">Username</label>
-          <div
-            class="input-wrapper"
-            [class.input-error]="isFieldInvalid('username')"
-            [class.input-valid]="isFieldValid('username')"
-          >
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <input
-              type="text"
-              id="username"
-              formControlName="username"
-              class="form-input form-input--has-status"
-              placeholder="Tu username"
-              [attr.aria-invalid]="isFieldInvalid('username')"
-            />
-            @if (isFieldValid('username')) {
-              <span class="input-status input-status--valid" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12" />
+        <div class="form-row form-row--contact">
+          <div class="form-group username-check-anchor">
+            <label for="username" class="form-label">Username</label>
+            <div class="username-field-row">
+              <div
+                class="input-wrapper"
+                [class.input-error]="isFieldInvalid('username')"
+                [class.input-valid]="isFieldValid('username')"
+              >
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
                 </svg>
-              </span>
-            }
-            @if (isFieldInvalid('username')) {
-              <span class="input-status input-status--invalid" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="15" y1="9" x2="9" y2="15" />
-                  <line x1="9" y1="9" x2="15" y2="15" />
-                </svg>
+                <input
+                  type="text"
+                  id="username"
+                  formControlName="username"
+                  class="form-input form-input--has-status"
+                  placeholder="Tu username"
+                  autocomplete="username"
+                  [attr.aria-invalid]="isFieldInvalid('username') || showUsernameUnavailablePopover()"
+                  [attr.aria-describedby]="showUsernameUnavailablePopover() ? 'username-unavailable-popover' : null"
+                />
+                @if (usernameChecking()) {
+                  <span class="input-status input-status--checking" aria-hidden="true">
+                    <svg class="spinner spinner--sm" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="32" stroke-linecap="round" />
+                    </svg>
+                  </span>
+                } @else if (isFieldValid('username')) {
+                  <span class="input-status input-status--valid" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                } @else if (isFieldInvalid('username') && !showUsernameUnavailablePopover()) {
+                  <span class="input-status input-status--invalid" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                  </span>
+                }
+              </div>
+
+              @if (showUsernameUnavailablePopover()) {
+                <div
+                  id="username-unavailable-popover"
+                  class="field-popover field-popover--error"
+                  role="alert"
+                  aria-live="polite"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>Este nombre de usuario no esta disponible.</span>
+                </div>
+              }
+            </div>
+            @if (isFieldInvalid('username') && !showUsernameUnavailablePopover()) {
+              <span class="field-error">
+                @if (registerForm.get('username')?.hasError('required')) {
+                  Requerido
+                } @else if (registerForm.get('username')?.hasError('minlength')) {
+                  Minimo 3 caracteres
+                }
               </span>
             }
           </div>
-          @if (isFieldInvalid('username')) {
-            <span class="field-error">El username es requerido</span>
-          }
+
+          <div class="form-group">
+            <label for="phone" class="form-label">Telefono <span class="optional">(Opcional)</span></label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                />
+              </svg>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                class="form-input"
+                placeholder="+1 234 567 890"
+              />
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -286,162 +337,164 @@
           }
         </div>
 
-        <div class="form-group">
-          <label for="phone" class="form-label">Telefono <span class="optional">(Opcional)</span></label>
-          <div class="input-wrapper">
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-              />
-            </svg>
-            <input
-              type="tel"
-              id="phone"
-              formControlName="phone"
-              class="form-input"
-              placeholder="+1 234 567 890"
-            />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="password" class="form-label">Contrasena</label>
-          <div
-            class="input-wrapper"
-            [class.input-error]="isFieldInvalid('password')"
-            [class.input-valid]="isFieldValid('password')"
-          >
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            <input
-              [type]="showPassword() ? 'text' : 'password'"
-              id="password"
-              formControlName="password"
-              class="form-input form-input--password"
-              placeholder="Minimo 6 caracteres"
-              autocomplete="new-password"
-              [attr.aria-invalid]="isFieldInvalid('password')"
-            />
-            @if (isFieldValid('password')) {
-              <span class="input-status input-status--valid" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </span>
-            }
-            @if (isFieldInvalid('password')) {
-              <span class="input-status input-status--invalid" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="form-row form-row--passwords">
+          <div class="form-group password-hints-anchor">
+            <div class="form-label-row">
+              <label for="password" class="form-label">Contrasena</label>
+              <button
+                type="button"
+                class="pwd-hints-trigger"
+                (click)="togglePasswordHints(); $event.stopPropagation()"
+                [attr.aria-expanded]="passwordHintsOpen()"
+                aria-controls="password-hints-panel"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <circle cx="12" cy="12" r="10" />
-                  <line x1="15" y1="9" x2="9" y2="15" />
-                  <line x1="9" y1="9" x2="15" y2="15" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
                 </svg>
-              </span>
-            }
-            <button
-              type="button"
-              class="toggle-password"
-              (click)="togglePassword()"
-              [attr.aria-label]="showPassword() ? 'Ocultar contrasena' : 'Mostrar contrasena'"
-            >
-              @if (showPassword()) {
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path
-                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
-                  />
-                  <line x1="1" y1="1" x2="23" y2="23" />
-                </svg>
-              } @else {
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              }
-            </button>
-          </div>
-          @if (isFieldInvalid('password')) {
-            <span class="field-error">
-              @if (registerForm.get('password')?.hasError('required')) {
-                La contrasena es requerida
-              } @else if (registerForm.get('password')?.hasError('minlength')) {
-                La contrasena debe tener al menos 6 caracteres
-              }
-            </span>
-          }
-
-          <div class="password-strength">
-            <div class="strength-bars">
-              <div class="bar" [class.active]="passwordStrength() >= 1" [class.weak]="passwordStrength() === 1" [class.medium]="passwordStrength() === 2" [class.strong]="passwordStrength() >= 3"></div>
-              <div class="bar" [class.active]="passwordStrength() >= 2" [class.medium]="passwordStrength() === 2" [class.strong]="passwordStrength() >= 3"></div>
-              <div class="bar" [class.active]="passwordStrength() >= 3" [class.strong]="passwordStrength() >= 3"></div>
+                Requisitos
+              </button>
             </div>
-            <span class="strength-text">
-              @if (passwordStrength() === 1) {
-                Debil
-              } @else if (passwordStrength() === 2) {
-                Media
-              } @else if (passwordStrength() >= 3) {
-                Fuerte
-              }
-            </span>
-          </div>
-
-          <ul class="password-requirements" aria-label="Requisitos de contrasena">
-            <li [class.password-requirements__met]="pwdReqMinLength()">Al menos 6 caracteres</li>
-            <li [class.password-requirements__met]="pwdReqMixedCase()">Mayuscula y minuscula</li>
-            <li [class.password-requirements__met]="pwdReqNumber()">Al menos un numero</li>
-            <li [class.password-requirements__met]="pwdReqSpecial()">Al menos un caracter especial</li>
-          </ul>
-        </div>
-
-        <div class="form-group">
-          <label for="confirmPassword" class="form-label">Confirmar contrasena</label>
-          <div
-            class="input-wrapper"
-            [class.input-error]="isFieldInvalid('confirmPassword')"
-            [class.input-valid]="isFieldValid('confirmPassword')"
-          >
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            <input
-              type="password"
-              id="confirmPassword"
-              formControlName="confirmPassword"
-              class="form-input form-input--has-status"
-              placeholder="Repite tu contrasena"
-              autocomplete="new-password"
-              [attr.aria-invalid]="isFieldInvalid('confirmPassword')"
-            />
-            @if (isFieldValid('confirmPassword')) {
-              <span class="input-status input-status--valid" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <polyline points="20 6 9 17 4 12" />
+            <div class="password-field-row">
+              <div
+                class="input-wrapper"
+                [class.input-error]="isFieldInvalid('password')"
+                [class.input-valid]="isFieldValid('password')"
+              >
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
+                <input
+                  [type]="showPassword() ? 'text' : 'password'"
+                  id="password"
+                  formControlName="password"
+                  class="form-input form-input--password"
+                  placeholder="Min. 6 caracteres"
+                  autocomplete="new-password"
+                  [attr.aria-invalid]="isFieldInvalid('password')"
+                  (focus)="openPasswordHints()"
+                />
+                <button
+                  type="button"
+                  class="toggle-password"
+                  (click)="togglePassword()"
+                  [attr.aria-label]="showPassword() ? 'Ocultar contrasena' : 'Mostrar contrasena'"
+                >
+                  @if (showPassword()) {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                      />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  } @else {
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  }
+                </button>
+              </div>
+
+              @if (passwordHintsOpen()) {
+                <div
+                  id="password-hints-panel"
+                  class="password-popover"
+                  role="dialog"
+                  aria-label="Requisitos de contrasena"
+                  (click)="$event.stopPropagation()"
+                >
+                  <p class="password-popover__title">Seguridad de la contrasena</p>
+                  <div class="password-strength password-strength--popover">
+                    <div class="strength-bars">
+                      <div class="bar" [class.active]="passwordStrength() >= 1" [class.weak]="passwordStrength() === 1" [class.medium]="passwordStrength() === 2" [class.strong]="passwordStrength() >= 3"></div>
+                      <div class="bar" [class.active]="passwordStrength() >= 2" [class.medium]="passwordStrength() === 2" [class.strong]="passwordStrength() >= 3"></div>
+                      <div class="bar" [class.active]="passwordStrength() >= 3" [class.strong]="passwordStrength() >= 3"></div>
+                    </div>
+                    <span class="strength-text">
+                      @if (passwordStrength() === 0) {
+                        —
+                      } @else if (passwordStrength() === 1) {
+                        Debil
+                      } @else if (passwordStrength() === 2) {
+                        Media
+                      } @else {
+                        Fuerte
+                      }
+                    </span>
+                  </div>
+                  <ul class="password-requirements" aria-label="Requisitos">
+                    <li [class.password-requirements__met]="pwdReqMinLength()">Al menos 6 caracteres</li>
+                    <li [class.password-requirements__met]="pwdReqMixedCase()">Mayuscula y minuscula</li>
+                    <li [class.password-requirements__met]="pwdReqNumber()">Al menos un numero</li>
+                    <li [class.password-requirements__met]="pwdReqSpecial()">Un caracter especial</li>
+                  </ul>
+                </div>
+              }
+            </div>
+            @if (isFieldInvalid('password')) {
+              <span class="field-error">
+                @if (registerForm.get('password')?.hasError('required')) {
+                  Requerida
+                } @else if (registerForm.get('password')?.hasError('minlength')) {
+                  Minimo 6 caracteres
+                }
               </span>
             }
+          </div>
+
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="confirmPassword" class="form-label">Confirmar</label>
+              <span class="pwd-hints-trigger pwd-hints-trigger--spacer" aria-hidden="true">Requisitos</span>
+            </div>
+            <div
+              class="input-wrapper"
+              [class.input-error]="isFieldInvalid('confirmPassword')"
+              [class.input-valid]="isFieldValid('confirmPassword')"
+            >
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <input
+                type="password"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                class="form-input form-input--has-status"
+                placeholder="Repetir"
+                autocomplete="new-password"
+                [attr.aria-invalid]="isFieldInvalid('confirmPassword')"
+              />
+              @if (isFieldValid('confirmPassword')) {
+                <span class="input-status input-status--valid" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+              }
+              @if (isFieldInvalid('confirmPassword')) {
+                <span class="input-status input-status--invalid" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" />
+                  </svg>
+                </span>
+              }
+            </div>
             @if (isFieldInvalid('confirmPassword')) {
-              <span class="input-status input-status--invalid" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="15" y1="9" x2="9" y2="15" />
-                  <line x1="9" y1="9" x2="15" y2="15" />
-                </svg>
+              <span class="field-error">
+                @if (registerForm.get('confirmPassword')?.hasError('required')) {
+                  Requerida
+                } @else if (registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
+                  No coincide
+                }
               </span>
             }
           </div>
-          @if (isFieldInvalid('confirmPassword')) {
-            <span class="field-error">
-              @if (registerForm.get('confirmPassword')?.hasError('required')) {
-                Confirma tu contrasena
-              } @else if (registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
-                Las contrasenas no coinciden
-              }
-            </span>
-          }
         </div>
 
         <div class="terms-wrapper">
@@ -457,7 +510,7 @@
           }
         </div>
 
-        <button type="submit" class="btn btn-primary btn-register-submit" [disabled]="registerForm.invalid || isLoading()">
+        <button type="submit" class="btn btn-primary btn-register-submit" [disabled]="!canSubmit()">
           @if (isLoading()) {
             <svg class="spinner" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="32" stroke-linecap="round" />

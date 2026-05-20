@@ -10,7 +10,7 @@ import {
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService } from '@features/auth/infrastructure/session/auth.service';
 import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {

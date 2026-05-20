@@ -1,0 +1,469 @@
+@use '../../../../../shared/styles/admin-shared' as *;
+
+// =============================================================================
+// Organizations Page — page-specific styles only.
+// Shared visuals come from `dashboard/styles/_admin-shared.scss`.
+// =============================================================================
+
+.loading-msg {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin: 0;
+  padding: 0.75rem 0;
+  text-align: center;
+}
+
+// -----------------------------------------------------------------------------
+// Page header actions (group of buttons aligned right)
+// -----------------------------------------------------------------------------
+.head-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.page-sub {
+  margin: 0.35rem 0 0;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+}
+
+.creator-cell {
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+// -----------------------------------------------------------------------------
+// Locations modal (sedes)
+// -----------------------------------------------------------------------------
+.locations-modal {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+
+  // Header, form y footer fijos; solo crece/encoge la lista.
+  > .modal__header,
+  &__form,
+  > .modal__actions {
+    flex-shrink: 0;
+  }
+
+  &__subtitle {
+    margin: 0.15rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--gray-600);
+    line-height: 1.4;
+  }
+
+  // Formulario crear/editar sede (grid 2 columnas + acciones).
+  &__form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem 0.85rem;
+    padding: 0.95rem 1rem;
+    margin: 0.6rem 0 0.85rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+    border: 1px solid rgba(59, 130, 246, 0.18);
+    border-radius: 10px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--gray-700);
+    font-weight: 600;
+    margin: 0;
+
+    &--full { grid-column: 1 / -1; }
+    &--name { grid-column: 1 / -1; }
+
+    input {
+      padding: 0.5rem 0.65rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--gray-900);
+      margin-bottom: 0;
+      transition: border-color 0.15s, box-shadow 0.15s;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+    }
+  }
+
+  &__form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.15rem;
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 1rem;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-300) transparent;
+
+    &::-webkit-scrollbar { width: 8px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 999px;
+      &:hover { background: var(--gray-400); }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Users modal (organizacion)
+// -----------------------------------------------------------------------------
+.org-users-modal {
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+
+  > .modal__header,
+  > .modal__actions,
+  &__associate,
+  &__invite {
+    flex-shrink: 0;
+  }
+
+  &__associate,
+  &__invite {
+    padding: 0.95rem 1rem;
+    border: 1px solid rgba(59, 130, 246, 0.14);
+    border-radius: 10px;
+    background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+    margin-bottom: 0.9rem;
+  }
+
+  &__associate {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--gray-700);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__section-title {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--gray-800);
+  }
+
+  &__disclosure {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.85rem;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+  }
+
+  &__disclosure-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  &__disclosure-subtitle {
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  &__disclosure-icon {
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--primary-700);
+    transition: transform 0.18s ease, background-color 0.18s ease;
+
+    svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &.is-open {
+      transform: rotate(180deg);
+      background: rgba(59, 130, 246, 0.18);
+    }
+  }
+
+  &__invite-panel {
+    margin-top: 0.95rem;
+    padding-top: 0.95rem;
+    border-top: 1px solid rgba(59, 130, 246, 0.14);
+  }
+
+  &__invite-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.3rem;
+  }
+
+  &__manager-summary {
+    padding: 0.95rem 1rem;
+    border: 1px solid rgba(59, 130, 246, 0.14);
+    border-radius: 10px;
+    background: #fff;
+    margin-bottom: 0.9rem;
+  }
+
+  &__manager-summary-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__manager-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.65rem;
+  }
+
+  &__manager-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.75rem 0.8rem;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.06);
+    border: 1px solid rgba(59, 130, 246, 0.12);
+
+    strong {
+      color: var(--gray-900);
+      font-size: 0.9rem;
+    }
+
+    span {
+      color: var(--gray-600);
+      font-size: 0.8rem;
+    }
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+}
+
+.org-manager-assign-modal {
+  max-width: 760px;
+}
+
+.lookup-list {
+  margin-top: 0.45rem;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.lookup-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(59, 130, 246, 0.08);
+    outline: none;
+  }
+
+  & + & {
+    border-top: 1px solid var(--gray-100);
+  }
+
+  &__main {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+
+  &__sub {
+    font-size: 0.78rem;
+    color: var(--gray-600);
+  }
+}
+
+.lookup-empty,
+.lookup-selected {
+  margin: 0.45rem 0 0;
+  font-size: 0.8rem;
+}
+
+.lookup-empty {
+  color: var(--gray-600);
+}
+
+.lookup-selected {
+  color: var(--primary-700);
+  font-weight: 600;
+}
+
+// Resalta la fila que se esta editando dentro del modal de sedes.
+tbody tr.row-editing {
+  background: rgba(59, 130, 246, 0.08) !important;
+  outline: 2px solid rgba(59, 130, 246, 0.35);
+  outline-offset: -2px;
+}
+
+@media (max-width: 600px) {
+  .locations-modal__form {
+    grid-template-columns: 1fr;
+  }
+
+  .org-users-modal__associate {
+    grid-template-columns: 1fr;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Create / Edit modal form (2-column grid)
+// -----------------------------------------------------------------------------
+.org-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--gray-700);
+    font-weight: 600;
+
+    &--full {
+      grid-column: 1 / -1;
+    }
+
+    input {
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--gray-900);
+      transition: border-color 0.15s, box-shadow 0.15s;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+    }
+  }
+
+  &__check {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.875rem;
+    color: var(--gray-800);
+    cursor: pointer;
+    padding: 0.5rem 0;
+
+    input[type='checkbox'] {
+      accent-color: var(--primary-600);
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+  }
+}
+
+.org-manager-panel {
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(59, 130, 246, 0.16);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+  margin-bottom: 1.15rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 0.9rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--gray-900);
+  }
+
+  &__hint {
+    margin: 0.25rem 0 0;
+    font-size: 0.82rem;
+    color: var(--gray-600);
+  }
+
+  &__modes {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 540px) {
+  .org-form {
+    grid-template-columns: 1fr;
+  }
+
+  .org-manager-panel__header {
+    flex-direction: column;
+  }
+}
