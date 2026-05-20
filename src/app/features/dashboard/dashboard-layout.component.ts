@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
-import { HasPermissionDirective } from '@core/directives/has-permission.directive';
 import { P } from '@core/constants/permissions';
 
 @Component({
@@ -14,8 +13,7 @@ import { P } from '@core/constants/permissions';
     FormsModule,
     RouterLink,
     RouterLinkActive,
-    RouterOutlet,
-    HasPermissionDirective
+    RouterOutlet
   ],
   template: `
     <div class="shell" [class.sidebar-open]="sidebarOpen()">
@@ -38,31 +36,50 @@ import { P } from '@core/constants/permissions';
               P.AUTH_ROLES_LIST,
               P.USERS_LIST,
               P.USERS_MY_ORGANIZATION
-            ])
+            ]) || authService.isAdmin()
           ) {
             <div class="nav-group-label">Administracion</div>
-            <a
-              *hasPermission="P.AUTH_ROLES_LIST"
-              routerLink="/dashboard/roles"
-              routerLinkActive="active"
-              class="nav-item"
-            >
-              <span class="nav-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </span>
-              <span>Roles</span>
-            </a>
-            <a
-              *hasPermission="P.USERS_LIST"
-              routerLink="/dashboard/usuarios"
-              routerLinkActive="active"
-              class="nav-item"
-            >
-              <span class="nav-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              </span>
-              <span>Usuarios</span>
-            </a>
+            @if (authService.hasPermission(P.AUTH_ROLES_LIST)) {
+              <a
+                routerLink="/dashboard/roles"
+                routerLinkActive="active"
+                class="nav-item"
+              >
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </span>
+                <span>Roles</span>
+              </a>
+            }
+            @if (authService.hasPermission(P.USERS_LIST)) {
+              <a
+                routerLink="/dashboard/usuarios"
+                routerLinkActive="active"
+                class="nav-item"
+              >
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+                <span>Usuarios</span>
+              </a>
+            }
+            @if (authService.isAdmin()) {
+              <a
+                routerLink="/dashboard/tipos-documento"
+                routerLinkActive="active"
+                class="nav-item"
+              >
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    <line x1="12" y1="6" x2="12" y2="12" />
+                    <line x1="9" y1="9" x2="15" y2="9" />
+                  </svg>
+                </span>
+                <span>Tipos de documento</span>
+              </a>
+            }
           }
 
           @if (
@@ -75,28 +92,30 @@ import { P } from '@core/constants/permissions';
             ])
           ) {
             <div class="nav-group-label">Operacion</div>
-            <a
-              *hasPermission="[P.ORG_LIST, P.ORG_GET, P.ORG_CREATE]"
-              routerLink="/dashboard/organizaciones"
-              routerLinkActive="active"
-              class="nav-item"
-            >
-              <span class="nav-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              </span>
-              <span>Organizaciones</span>
-            </a>
-            <a
-              *hasPermission="[P.DOC_LIST, P.DOC_CREATE]"
-              routerLink="/dashboard/documentos"
-              routerLinkActive="active"
-              class="nav-item"
-            >
-              <span class="nav-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              </span>
-              <span>Documentos</span>
-            </a>
+            @if (authService.hasAnyPermission([P.ORG_LIST, P.ORG_GET, P.ORG_CREATE])) {
+              <a
+                routerLink="/dashboard/organizaciones"
+                routerLinkActive="active"
+                class="nav-item"
+              >
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                </span>
+                <span>Organizaciones</span>
+              </a>
+            }
+            @if (authService.hasAnyPermission([P.DOC_LIST, P.DOC_CREATE])) {
+              <a
+                routerLink="/dashboard/documentos"
+                routerLinkActive="active"
+                class="nav-item"
+              >
+                <span class="nav-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </span>
+                <span>Documentos</span>
+              </a>
+            }
           }
         </nav>
       </aside>
@@ -456,7 +475,7 @@ export class DashboardLayoutComponent {
   hashResult = signal<string | null>(null);
   hashError = signal<string | null>(null);
 
-  /** Codes de permisos expuestos al template para usar con *hasPermission. */
+  /** Codes de permisos expuestos al template (sidebar con @if). */
   protected readonly P = P;
 
   constructor(public authService: AuthService) {}

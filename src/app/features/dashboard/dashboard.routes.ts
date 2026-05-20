@@ -56,6 +56,14 @@ export const DASHBOARD_ROUTES: Routes = [
           import('./pages/documents-page/documents-page.component').then(
             m => m.DocumentsPageComponent
           )
+      },
+      {
+        path: 'tipos-documento',
+        loadComponent: () =>
+          import('./pages/document-types-admin-page/document-types-admin-page.component').then(
+            m => m.DocumentTypesAdminPageComponent
+          ),
+        canActivate: [adminGuard]
       }
     ]
   }

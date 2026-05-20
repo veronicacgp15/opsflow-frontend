@@ -8,14 +8,15 @@
     </div>
 
     <div class="head-actions">
-      <button
-        *hasPermission="P.ORG_CREATE"
-        type="button"
-        class="btn primary"
-        (click)="openCreate()"
-      >
-        Nuevo
-      </button>
+      @if (authService.hasPermission(P.ORG_CREATE)) {
+        <button
+          type="button"
+          class="btn primary"
+          (click)="openCreate()"
+        >
+          Nuevo
+        </button>
+      }
     </div>
   </div>
 
@@ -73,101 +74,107 @@
               }
             </td>
             <td class="actions">
-              <button
-                *hasPermission="P.USERS_UPDATE_ROLES"
-                type="button"
-                class="icon-btn"
-                (click)="openManagerModal(o)"
-                title="Asignar o cambiar manager"
-                aria-label="Asignar o cambiar manager"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  width="18" height="18" aria-hidden="true">
-                  <path d="m12 3 2.5 5 5.5.8-4 3.9.9 5.5L12 15.8 7.1 18.2 8 12.7 4 8.8 9.5 8z" />
-                </svg>
-              </button>
-              <button
-                *hasPermission="[P.USERS_LIST, P.USERS_MY_ORGANIZATION, P.USERS_CREATE]"
-                type="button"
-                class="icon-btn"
-                (click)="openUsers(o)"
-                title="Asociar usuarios"
-                aria-label="Asociar usuarios"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  width="18" height="18" aria-hidden="true">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-              </button>
-              <button
-                *hasPermission="[P.LOCATION_BY_ORG, P.LOCATION_LIST]"
-                type="button"
-                class="icon-btn"
-                (click)="openLocations(o)"
-                title="Gestionar sedes"
-                aria-label="Gestionar sedes"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  width="18" height="18" aria-hidden="true">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </button>
+              @if (authService.hasPermission(P.USERS_UPDATE_ROLES)) {
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="openManagerModal(o)"
+                  title="Asignar o cambiar manager"
+                  aria-label="Asignar o cambiar manager"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    width="18" height="18" aria-hidden="true">
+                    <path d="m12 3 2.5 5 5.5.8-4 3.9.9 5.5L12 15.8 7.1 18.2 8 12.7 4 8.8 9.5 8z" />
+                  </svg>
+                </button>
+              }
+              @if (authService.hasAnyPermission([P.USERS_LIST, P.USERS_MY_ORGANIZATION, P.USERS_CREATE])) {
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="openUsers(o)"
+                  title="Asociar usuarios"
+                  aria-label="Asociar usuarios"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    width="18" height="18" aria-hidden="true">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </button>
+              }
+              @if (authService.hasAnyPermission([P.LOCATION_BY_ORG, P.LOCATION_LIST])) {
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="openLocations(o)"
+                  title="Gestionar sedes"
+                  aria-label="Gestionar sedes"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    width="18" height="18" aria-hidden="true">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </button>
+              }
 
               
 
-              <button
-                *hasPermission="P.ORG_UPDATE"
-                type="button"
-                class="icon-btn"
-                (click)="openEdit(o)"
-                title="Editar organizacion"
-                aria-label="Editar organizacion"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  width="18" height="18" aria-hidden="true">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                </svg>
-              </button>
+              @if (authService.hasPermission(P.ORG_UPDATE)) {
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="openEdit(o)"
+                  title="Editar organizacion"
+                  aria-label="Editar organizacion"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    width="18" height="18" aria-hidden="true">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </button>
+              }
 
-              <button
-                *hasPermission="P.ORG_DELETE"
-                type="button"
-                class="icon-btn warn"
-                (click)="confirmDelete(o)"
-                title="Eliminar organizacion"
-                aria-label="Eliminar organizacion"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  width="18" height="18" aria-hidden="true">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                  <path d="M10 11v6" />
-                  <path d="M14 11v6" />
-                  <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                </svg>
-              </button>
-              <label
-                *hasPermission="o.active ? P.ORG_DEACTIVATE : P.ORG_ACTIVATE"
-                class="switch"
-                [title]="o.active ? 'Desactivar organizacion' : 'Activar organizacion'"
-              >
-                <input
-                  type="checkbox"
-                  [checked]="o.active"
-                  (click)="toggleOrgActive($event, o)"
-                />
-                <span class="slider round"></span>
-              </label>
+              @if (authService.hasPermission(P.ORG_DELETE)) {
+                <button
+                  type="button"
+                  class="icon-btn warn"
+                  (click)="confirmDelete(o)"
+                  title="Eliminar organizacion"
+                  aria-label="Eliminar organizacion"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    width="18" height="18" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                    <path d="M10 11v6" />
+                    <path d="M14 11v6" />
+                    <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                  </svg>
+                </button>
+              }
+              @if (authService.hasPermission(o.active ? P.ORG_DEACTIVATE : P.ORG_ACTIVATE)) {
+                <label
+                  class="switch"
+                  [title]="o.active ? 'Desactivar organizacion' : 'Activar organizacion'"
+                >
+                  <input
+                    type="checkbox"
+                    [checked]="o.active"
+                    (click)="toggleOrgActive($event, o)"
+                  />
+                  <span class="slider round"></span>
+                </label>
+              }
             </td>
           </tr>
         } @empty {
@@ -405,7 +412,8 @@
         </div>
       }
 
-      <div *hasPermission="P.USERS_CREATE" class="org-users-modal__invite">
+      @if (authService.hasPermission(P.USERS_CREATE)) {
+        <div class="org-users-modal__invite">
         <button
           type="button"
           class="org-users-modal__disclosure"
@@ -467,6 +475,7 @@
           </div>
         }
       </div>
+      }
 
       <div class="org-users-modal__body">
         @if (orgUsersLoading()) {
@@ -588,10 +597,10 @@
       </div>
 
       <!-- Form crear/editar sede (gateado por permiso correspondiente) -->
-      <div
-        *hasPermission="editingLocationId() != null ? P.LOCATION_UPDATE : P.LOCATION_CREATE"
-        class="locations-modal__form"
-      >
+      @if (editingLocationId() != null ? authService.hasPermission(P.LOCATION_UPDATE) : authService.hasPermission(P.LOCATION_CREATE)) {
+        <div
+          class="locations-modal__form"
+        >
         <label class="locations-modal__field locations-modal__field--name">
           <span>Nombre</span>
           <input
@@ -648,6 +657,7 @@
           </button>
         </div>
       </div>
+      }
 
       <div class="locations-modal__body">
         @if (locationsLoading()) {
@@ -685,39 +695,41 @@
                       authService.hasPermission(P.LOCATION_DELETE)
                     ) {
                       <td class="actions">
-                        <button
-                          *hasPermission="P.LOCATION_UPDATE"
-                          type="button"
-                          class="icon-btn"
-                          (click)="startEditLocation(loc)"
-                          title="Editar sede"
-                          aria-label="Editar sede"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            width="18" height="18" aria-hidden="true">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                          </svg>
-                        </button>
-                        <button
-                          *hasPermission="P.LOCATION_DELETE"
-                          type="button"
-                          class="icon-btn warn"
-                          (click)="confirmDeleteLocation(loc)"
-                          title="Eliminar sede"
-                          aria-label="Eliminar sede"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            width="18" height="18" aria-hidden="true">
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                          </svg>
-                        </button>
+                        @if (authService.hasPermission(P.LOCATION_UPDATE)) {
+                          <button
+                            type="button"
+                            class="icon-btn"
+                            (click)="startEditLocation(loc)"
+                            title="Editar sede"
+                            aria-label="Editar sede"
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                              width="18" height="18" aria-hidden="true">
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                        }
+                        @if (authService.hasPermission(P.LOCATION_DELETE)) {
+                          <button
+                            type="button"
+                            class="icon-btn warn"
+                            (click)="confirmDeleteLocation(loc)"
+                            title="Eliminar sede"
+                            aria-label="Eliminar sede"
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                              width="18" height="18" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                              <path d="M10 11v6" />
+                              <path d="M14 11v6" />
+                              <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                            </svg>
+                          </button>
+                        }
                       </td>
                     }
                   </tr>

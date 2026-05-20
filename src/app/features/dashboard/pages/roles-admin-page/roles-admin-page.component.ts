@@ -2,8 +2,8 @@ import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from '@core/services/admin-api.service';
+import { AuthService } from '@core/services/auth.service';
 import { BackendRole, PermissionDto } from '@core/models/admin.models';
-import { HasPermissionDirective } from '@core/directives/has-permission.directive';
 import { P } from '@core/constants/permissions';
 
 type NoticeKind = 'info' | 'success' | 'warning' | 'error';
@@ -43,12 +43,12 @@ const SERVICE_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-roles-admin-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, HasPermissionDirective],
+  imports: [CommonModule, FormsModule],
   templateUrl: './roles-admin-page.component.html',
   styleUrl: './roles-admin-page.component.scss'
 })
 export class RolesAdminPageComponent implements OnInit {
-  /** Codes de permisos expuestos al template para usar con *hasPermission. */
+  /** Codes de permisos expuestos al template (p. ej. con {@code authService.hasPermission}). */
   protected readonly P = P;
 
   readonly roles = signal<BackendRole[]>([]);
@@ -125,7 +125,10 @@ export class RolesAdminPageComponent implements OnInit {
     return list;
   });
 
-  constructor(private readonly adminApi: AdminApiService) {}
+  constructor(
+    private readonly adminApi: AdminApiService,
+    public readonly authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.reload();

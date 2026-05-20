@@ -9,15 +9,16 @@
     </div>
 
     <div class="head-actions">
-      <button
-        *hasPermission="P.USERS_CREATE"
-        type="button"
-        class="btn primary"
-        (click)="openInvite()"
-        title="Invitar un usuario a mi organizacion"
-      >
-        Invitar usuario
-      </button>
+      @if (authService.hasPermission(P.USERS_CREATE)) {
+        <button
+          type="button"
+          class="btn primary"
+          (click)="openInvite()"
+          title="Invitar un usuario a mi organizacion"
+        >
+          Invitar usuario
+        </button>
+      }
     </div>
   </div>
 

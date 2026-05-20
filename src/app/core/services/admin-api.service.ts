@@ -8,6 +8,8 @@ import {
   DocumentCreatePayload,
   DocumentDto,
   DocumentTypeDto,
+  DocumentTypeUpsertRequest,
+  DocumentTypeActivePatchBody,
   LocationDto,
   LocationRequest,
   OrganizationDto,
@@ -207,9 +209,50 @@ export class AdminApiService {
     );
   }
 
-  /** Catalogo de tipos de documento. La pagina lo usa para mostrar nombre en vez de id. */
+  /** Catalogo de tipos activos para formularios (MANAGER/USER/ADMIN). La gestion CRUD es solo ADMIN en /types. */
   listDocumentTypes(): Observable<DocumentTypeDto[]> {
+    return this.http.get<DocumentTypeDto[]>(`${this.documentsBase}/type-catalog`);
+  }
+
+  /** Listado admin: solo tipos activos (misma informacion que type-catalog pero requiere ADMIN). */
+  listDocumentTypesAdmin(): Observable<DocumentTypeDto[]> {
     return this.http.get<DocumentTypeDto[]>(`${this.documentsBase}/types`);
+  }
+
+  /** Listado admin: activos e inactivos. */
+  listAllDocumentTypesAdmin(): Observable<DocumentTypeDto[]> {
+    return this.http.get<DocumentTypeDto[]>(`${this.documentsBase}/types/all`);
+  }
+
+  createDocumentType(body: DocumentTypeUpsertRequest): Observable<DocumentTypeDto> {
+    return this.http.post<DocumentTypeDto>(`${this.documentsBase}/types`, body);
+  }
+
+  updateDocumentType(id: number, body: DocumentTypeUpsertRequest): Observable<DocumentTypeDto> {
+    return this.http.put<DocumentTypeDto>(`${this.documentsBase}/types/${id}`, body);
+  }
+
+  getDocumentTypeById(id: number): Observable<DocumentTypeDto> {
+    return this.http.get<DocumentTypeDto>(`${this.documentsBase}/types/${id}`);
+  }
+
+  /** Solo actualiza {@code active} (sin enviar nombre ni descripcion). */
+  patchDocumentTypeActive(id: number, active: boolean): Observable<DocumentTypeDto> {
+    const body: DocumentTypeActivePatchBody = { active };
+    return this.http.patch<DocumentTypeDto>(`${this.documentsBase}/types/${id}/active`, body);
+  }
+
+  activateDocumentType(id: number): Observable<DocumentTypeDto> {
+    return this.http.patch<DocumentTypeDto>(`${this.documentsBase}/types/${id}/activate`, {});
+  }
+
+  deactivateDocumentType(id: number): Observable<DocumentTypeDto> {
+    return this.http.patch<DocumentTypeDto>(`${this.documentsBase}/types/${id}/deactivate`, {});
+  }
+
+  /** Borrado logico (mismo efecto que desactivar; 409 si el tipo esta en uso). */
+  deleteDocumentType(id: number): Observable<DocumentTypeDto> {
+    return this.http.delete<DocumentTypeDto>(`${this.documentsBase}/types/${id}`);
   }
 
   /**

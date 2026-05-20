@@ -13,7 +13,6 @@ import {
   UpdateUserBody,
   UserAdminDto
 } from '@core/models/admin.models';
-import { HasPermissionDirective } from '@core/directives/has-permission.directive';
 import { P } from '@core/constants/permissions';
 
 type NoticeKind = 'info' | 'success' | 'warning' | 'error';
@@ -66,7 +65,7 @@ function emptyInviteUserForm(): InviteUserFormModel {
 @Component({
   selector: 'app-organizations-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, HasPermissionDirective],
+  imports: [CommonModule, FormsModule],
   templateUrl: './organizations-page.component.html',
   styleUrl: './organizations-page.component.scss'
 })
