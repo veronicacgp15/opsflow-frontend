@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService } from '@features/auth/infrastructure/session/auth.service';
 import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 @Component({

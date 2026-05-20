@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService } from '@features/auth/infrastructure/session/auth.service';
 import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 import { ForgotPasswordModalComponent } from '../forgot-password-modal/forgot-password-modal.component';
 
@@ -66,9 +66,9 @@ export class LoginComponent {
     this.errorMessage.set(null);
     this.isLoading.set(true);
 
-    const { username, password } = this.loginForm.value;
+    const { username, password, rememberMe } = this.loginForm.value;
 
-    this.authService.login({ username, password }).subscribe({
+    this.authService.login({ username, password }, !!rememberMe).subscribe({
       next: () => {
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
         this.router.navigateByUrl(returnUrl);

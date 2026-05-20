@@ -1,7 +1,7 @@
 import { Component, HostListener, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '@core/services/auth.service';
+import { AuthService } from '@features/auth/infrastructure/session/auth.service';
 
 @Component({
   selector: 'app-forgot-password-modal',

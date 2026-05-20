@@ -21,9 +21,12 @@
     "lib": ["ES2022", "dom"],
     "paths": {
       "@app/*": ["src/app/*"],
-      "@core/*": ["src/app/core/*"],
+      "@platform/*": ["src/app/platform/*"],
+      "@shell/*": ["src/app/shell/*"],
+      "@features/*": ["src/app/features/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@env/*": ["src/environments/*"]
+      "@env/*": ["src/environments/*"],
+      "@core/*": ["src/app/platform/*"]
     }
   },
   "angularCompilerOptions": {
