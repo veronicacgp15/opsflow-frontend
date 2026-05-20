@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { AdminApiService } from '@core/services/admin-api.service';
 import { AuthService } from '@core/services/auth.service';
 import { CreateUserBody, UserAdminDto } from '@core/models/admin.models';
-import { HasPermissionDirective } from '@core/directives/has-permission.directive';
 import { P } from '@core/constants/permissions';
 
 type SortKey = 'id_asc' | 'id_desc' | 'user_asc' | 'user_desc';
@@ -45,7 +44,7 @@ function emptyInviteForm(): InviteFormModel {
 @Component({
   selector: 'app-my-org-users-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, HasPermissionDirective],
+  imports: [CommonModule, FormsModule],
   templateUrl: './my-org-users-page.component.html',
   styleUrls: ['./my-org-users-page.component.scss']
 })

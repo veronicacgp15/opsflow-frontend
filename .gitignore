@@ -1,16 +1,21 @@
-# v0 sandbox internal files
-__v0_runtime_loader.js
-__v0_devtools.tsx
-__v0_jsx-dev-runtime.ts
-.snowflake/
-.v0-trash/
-.vercel/
-next.user-config.*
+# Carpetas de dependencias y compilación
+node_modules/
+/dist/
+/.angular/
 
-# Environment variables
-.env*.local
+# Caché de TypeScript y compilación rápida
+*.tsbuildinfo
+.editorconfig
 
-# Common ignores
-node_modules
-.next/
+# Archivos de configuración local y entorno
+.env
+.env *.local
+.appconfig.json
+
+# Archivos del Sistema Operativo
 .DS_Store
+Thumbs.db
+
+# Carpetas de IDEs (Opcional, por si usas WebStorm o VS Code local)
+/.idea/
+/.vscode/

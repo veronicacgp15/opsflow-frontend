@@ -10,7 +10,6 @@ import {
   UpdateUserBody,
   UserAdminDto
 } from '@core/models/admin.models';
-import { HasPermissionDirective } from '@core/directives/has-permission.directive';
 import { P } from '@core/constants/permissions';
 
 type UserListSort = 'id_asc' | 'id_desc' | 'user_asc' | 'user_desc';
@@ -75,12 +74,12 @@ function emptyEditForm(): EditUserFormModel {
 @Component({
   selector: 'app-users-admin-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, HasPermissionDirective],
+  imports: [CommonModule, FormsModule],
   templateUrl: './users-admin-page.component.html',
   styleUrl: './users-admin-page.component.scss'
 })
 export class UsersAdminPageComponent implements OnInit {
-  /** Codes de permisos expuestos al template para usar con *hasPermission. */
+  /** Codes de permisos expuestos al template (@if). */
   protected readonly P = P;
 
   readonly users = signal<UserAdminDto[]>([]);

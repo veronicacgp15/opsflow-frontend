@@ -4,15 +4,16 @@
       <h1 class="page-title">Usuarios</h1>
     </div>
     <div class="head-actions">
-      <button
-        *hasPermission="P.USERS_CREATE"
-        type="button"
-        class="btn primary"
-        (click)="openCreate()"
-        title="Crear/invitar un usuario nuevo"
-      >
-        Nuevo usuario
-      </button>
+      @if (authService.hasPermission(P.USERS_CREATE)) {
+        <button
+          type="button"
+          class="btn primary"
+          (click)="openCreate()"
+          title="Crear/invitar un usuario nuevo"
+        >
+          Nuevo usuario
+        </button>
+      }
     </div>
   </div>
 
@@ -136,69 +137,72 @@
                 }
               </td>
               <td class="actions">
-                <label
-                  *hasPermission="P.USERS_DEACTIVATE"
-                  class="switch"
-                  [title]="u.enabled ? 'Desactivar usuario' : 'Activar usuario'"
-                >
-                  <input
-                    type="checkbox"
-                    [checked]="u.enabled"
-                    (click)="toggleUserStatus($event, u)"
-                  />
-                  <span class="slider round"></span>
-                </label>
-
-                <button
-                  *hasPermission="P.USERS_UPDATE"
-                  type="button"
-                  class="icon-btn"
-                  (click)="openEdit(u)"
-                  title="Editar datos del usuario"
-                  aria-label="Editar usuario"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
+                @if (authService.hasPermission(P.USERS_DEACTIVATE)) {
+                  <label
+                    class="switch"
+                    [title]="u.enabled ? 'Desactivar usuario' : 'Activar usuario'"
                   >
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
-                </button>
+                    <input
+                      type="checkbox"
+                      [checked]="u.enabled"
+                      (click)="toggleUserStatus($event, u)"
+                    />
+                    <span class="slider round"></span>
+                  </label>
+                }
 
-                <button
-                  *hasPermission="P.USERS_REVOKE_SESSIONS"
-                  type="button"
-                  class="icon-btn"
-                  [class.warn]="u.hasActiveSession"
-                  [class.icon-btn--muted]="!u.hasActiveSession"
-                  (click)="doRevoke(u)"
-                  [disabled]="!u.hasActiveSession"
-                  [title]="u.hasActiveSession ? 'Revocar sesion activa' : 'Sin sesion activa que revocar'"
-                  [attr.aria-label]="u.hasActiveSession ? 'Revocar sesion activa' : 'Sin sesion activa que revocar'"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
+                @if (authService.hasPermission(P.USERS_UPDATE)) {
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    (click)="openEdit(u)"
+                    title="Editar datos del usuario"
+                    aria-label="Editar usuario"
                   >
-                    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
-                    <line x1="12" y1="2" x2="12" y2="12" />
-                  </svg>
-                </button>
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                }
+
+                @if (authService.hasPermission(P.USERS_REVOKE_SESSIONS)) {
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [class.warn]="u.hasActiveSession"
+                    [class.icon-btn--muted]="!u.hasActiveSession"
+                    (click)="doRevoke(u)"
+                    [disabled]="!u.hasActiveSession"
+                    [title]="u.hasActiveSession ? 'Revocar sesion activa' : 'Sin sesion activa que revocar'"
+                    [attr.aria-label]="u.hasActiveSession ? 'Revocar sesion activa' : 'Sin sesion activa que revocar'"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+                      <line x1="12" y1="2" x2="12" y2="12" />
+                    </svg>
+                  </button>
+                }
               </td>
             </tr>
           }

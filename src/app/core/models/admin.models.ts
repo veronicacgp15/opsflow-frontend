@@ -176,9 +176,18 @@ export interface DocumentTypeDto {
   id: number;
   name: string;
   description: string | null;
+  active?: boolean;
 }
 
+export interface DocumentTypeUpsertRequest {
+  name: string;
+  description?: string | null;
+}
 
+/** Body para PATCH /documents/types/{id}/active (solo el flag). */
+export interface DocumentTypeActivePatchBody {
+  active: boolean;
+}
 export interface UserProfileDto {
   id: number;
   username: string;

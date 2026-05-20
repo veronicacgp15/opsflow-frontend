@@ -1,0 +1,50 @@
+@use '../../styles/admin-shared' as *;
+
+.desc-cell {
+  max-width: 360px;
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  vertical-align: middle;
+}
+
+.actions-cell .switch {
+  flex-shrink: 0;
+}
+
+.switch.switch--busy {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 72px;
+  margin-bottom: 0.75rem;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+}
+
+.err {
+  color: #b91c1c;
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
